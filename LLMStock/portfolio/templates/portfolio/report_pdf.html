@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: sans-serif; color: #333; margin: 40px; }
+        .header { text-align: center; border-bottom: 2px solid #8b5cf6; padding-bottom: 20px; margin-bottom: 30px; }
+        .title { font-size: 24px; font-weight: bold; color: #8b5cf6; margin-bottom: 5px; }
+        .user { font-size: 16px; color: #4c1d95; margin-bottom: 5px; }
+        .date { font-size: 12px; color: #666; }
+        .summary-box { background-color: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 12px; padding: 20px; margin-bottom: 30px; }
+        .summary-grid { display: block; }
+        .summary-item { margin-bottom: 10px; font-size: 16px; }
+        .label { font-weight: bold; color: #6d28d9; }
+        .value { float: right; font-weight: bold; }
+        .section-title { font-size: 18px; font-weight: bold; color: #4c1d95; border-bottom: 1px solid #ddd6fe; padding-bottom: 5px; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background-color: #f8fafc; text-align: left; padding: 12px; border: 1px solid #e2e8f0; font-size: 12px; text-transform: uppercase; color: #64748b; }
+        td { padding: 12px; border: 1px solid #e2e8f0; font-size: 13px; }
+        .profit { color: #10b981; font-weight: bold; }
+        .loss { color: #ef4444; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">Portfolio Summary Report</div>
+        <div class="user">Prepared for: {{ user.username }}</div>
+        <div class="date">Generated on: {{ date }}</div>
+    </div>
+
+    <div class="summary-box">
+        <div class="summary-item">
+            <span class="label">Total Investment:</span>
+            <span class="value">${{ total_investment|floatformat:2 }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">Current Value:</span>
+            <span class="value">${{ total_current_value|floatformat:2 }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">Total Profit/Loss:</span>
+            <span class="value {% if total_pl >= 0 %}profit{% else %}loss{% endif %}">
+                ${{ total_pl|floatformat:2 }}
+            </span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Holdings Breakdown</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Qty</th>
+                    <th>Avg Price</th>
+                    <th>Cur Price</th>
+                    <th>Value</th>
+                    <th>P/L</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in portfolios %}
+                <tr>
+                    <td><strong>{{ p.stock.symbol }}</strong></td>
+                    <td>{{ p.quantity }}</td>
+                    <td>${{ p.purchase_price|floatformat:2 }}</td>
+                    <td>${{ p.stock.current_price|floatformat:2 }}</td>
+                    <td>${{ p.current_value|floatformat:2 }}</td>
+                    <td class="{% if p.profit_loss >= 0 %}profit{% else %}loss{% endif %}">
+                        ${{ p.profit_loss|floatformat:2 }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 50px; text-align: center; font-size: 10px; color: #94a3b8;">
+        &copy; 2026 Stock Platform. All rights reserved. Information provided is subject to market fluctuations.
+    </div>
+</body>
+</html>

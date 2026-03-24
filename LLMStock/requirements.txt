@@ -1,0 +1,14 @@
+django==4.2
+djangorestframework
+djangorestframework-simplejwt
+django-cors-headers
+python-dotenv
+yfinance
+pandas
+scikit-learn
+google-generativeai
+chromadb
+weasyprint
+python-telegram-bot
+google-cloud-speech
+pydub

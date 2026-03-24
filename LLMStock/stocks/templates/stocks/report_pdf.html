@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: sans-serif; color: #333; margin: 40px; }
+        .header { text-align: center; border-bottom: 2px solid #0ea5e9; padding-bottom: 20px; margin-bottom: 30px; }
+        .title { font-size: 24px; font-weight: bold; color: #0ea5e9; margin-bottom: 5px; }
+        .date { font-size: 12px; color: #666; }
+        .section { margin-bottom: 30px; }
+        .section-title { font-size: 18px; font-weight: bold; color: #0c4a6e; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th { background-color: #f8fafc; text-align: left; padding: 10px; border: 1px solid #e2e8f0; font-size: 14px; }
+        td { padding: 10px; border: 1px solid #e2e8f0; font-size: 14px; }
+        .metric-grid { display: block; }
+        .metric-item { margin-bottom: 10px; font-size: 14px; }
+        .label { font-weight: bold; color: #64748b; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">{{ stock.symbol }} - Analysis Report</div>
+        <div class="date">Generated on: {{ date }}</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Stock Information</div>
+        <table>
+            <tr>
+                <th width="30%">Name</th>
+                <td>{{ stock.name }}</td>
+            </tr>
+            <tr>
+                <th>Sector</th>
+                <td>{{ stock.sector }}</td>
+            </tr>
+            <tr>
+                <th>Current Price</th>
+                <td>${{ stock.current_price }}</td>
+            </tr>
+            <tr>
+                <th>PE Ratio</th>
+                <td>{{ stock.pe_ratio }}</td>
+            </tr>
+            <tr>
+                <th>Market Cap</th>
+                <td>${{ stock.market_cap }}</td>
+            </tr>
+        </table>
+    </div>
+
+    {% if details and details.indicators %}
+    <div class="section">
+        <div class="section-title">Technical Indicators</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Indicator</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>RSI (14)</td>
+                    <td>{{ details.indicators.rsi|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <td>20-Day Moving Average</td>
+                    <td>${{ details.indicators.ma_20|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <td>50-Day Moving Average</td>
+                    <td>${{ details.indicators.ma_50|floatformat:2 }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <div class="section-title">Disclaimer</div>
+        <p style="font-size: 10px; color: #94a3b8;">
+            This report is generated for informational purposes only. It does not constitute financial advice. 
+            Investing in stocks involves risk. Please consult with a professional financial advisor before making any investment decisions.
+        </p>
+    </div>
+</body>
+</html>
