@@ -147,7 +147,7 @@ const Stocks = () => {
 };
 
 const StockCard = ({ stock, currency }: { stock: any, currency: string }) => (
-  <Link to={`/stocks/${stock.id}`}>
+  <Link to={`/app/stocks/${stock.id}`}>
     <motion.div 
       whileHover={{ y: -8, scale: 1.02 }}
       className="group bg-white dark:bg-slate-900 p-8 rounded-[40px] border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-500 relative overflow-hidden"

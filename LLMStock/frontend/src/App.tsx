@@ -12,16 +12,18 @@ import AdminLayout from './components/Layout/AdminLayout';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminStocks from './pages/admin/AdminStocks';
 import AdminLogs from './pages/admin/AdminLogs';
+import Home from './pages/Home';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
         {/* User Routes */}
-        <Route path="/" element={<MainLayout />}>
+        <Route path="/app" element={<MainLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="stocks/:id" element={<StockDetail />} />
           <Route path="stocks" element={<Stocks />} />

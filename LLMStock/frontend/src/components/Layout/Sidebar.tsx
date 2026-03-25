@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   PieChart, 
@@ -15,10 +15,10 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const navItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
-    { name: 'Stocks', icon: TrendingUp, path: '/stocks' },
-    { name: 'Portfolio', icon: Briefcase, path: '/portfolio' },
-    { name: 'AI Chatbot', icon: MessageSquare, path: '/chat' },
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/app' },
+    { name: 'Stocks', icon: TrendingUp, path: '/app/stocks' },
+    { name: 'Portfolio', icon: Briefcase, path: '/app/portfolio' },
+    { name: 'AI Chatbot', icon: MessageSquare, path: '/app/chat' },
   ];
 
   return (
@@ -27,7 +27,11 @@ const Sidebar = () => {
       isCollapsed ? "w-20" : "w-64"
     )}>
       <div className="p-6 flex items-center justify-between">
-        {!isCollapsed && <span className="text-xl font-bold bg-gradient-to-r from-primary-400 to-accent-400 bg-clip-text text-transparent">Stock Platform</span>}
+        {!isCollapsed && (
+          <Link to="/" className="text-xl font-black tracking-[0.12em] uppercase bg-gradient-to-r from-primary-400 to-accent-400 bg-clip-text text-transparent hover:opacity-90">
+            MORPHEUS
+          </Link>
+        )}
         <button 
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
@@ -41,6 +45,7 @@ const Sidebar = () => {
           <NavLink
             key={item.path}
             to={item.path}
+            end={item.path === '/app'}
             className={({ isActive }) => cn(
               "flex items-center p-3 rounded-xl transition-all duration-200 group",
               isActive ? "bg-primary-600 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"

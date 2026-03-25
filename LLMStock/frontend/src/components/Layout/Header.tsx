@@ -3,11 +3,17 @@ import { Sun, Moon, User, LogOut, Bell, Shield } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
 
+const THEME_KEY = 'morpheus-theme';
+
 const Header = () => {
   const { user, logout } = useAuth();
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem(THEME_KEY) !== 'light';
+  });
 
   useEffect(() => {
+    localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
     if (isDark) {
       document.documentElement.classList.add('dark');
       document.body.classList.add('dark');

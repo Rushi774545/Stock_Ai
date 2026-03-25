@@ -61,7 +61,7 @@ const AdminSidebar = () => {
 
       <div className="p-4 border-t border-slate-800">
         <NavLink 
-          to="/"
+          to="/app"
           className="flex items-center p-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-all"
         >
           <ArrowLeft size={20} className={cn(!isCollapsed && "mr-4")} />
