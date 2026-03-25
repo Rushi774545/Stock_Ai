@@ -332,20 +332,22 @@ const StockDetail = () => {
                           {stock?.indicators?.rsi?.toFixed(2)} - {stock?.indicators?.rsi > 70 ? 'Overbought' : stock?.indicators?.rsi < 30 ? 'Oversold' : 'Neutral'}
                         </span>
                       </div>
-                      <div className="h-[200px] bg-slate-50 dark:bg-slate-800/50 rounded-3xl p-4">
-                        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                          <LineChart data={filteredData}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
-                            <XAxis dataKey="date" hide />
-                            <YAxis domain={[0, 100]} ticks={[30, 70]} hide />
-                            <Tooltip 
-                              contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '16px', color: '#fff' }}
-                            />
-                            <ReferenceLine y={70} stroke="#f43f5e" strokeDasharray="3 3" />
-                            <ReferenceLine y={30} stroke="#10b981" strokeDasharray="3 3" />
-                            <Line type="monotone" dataKey="rsi" stroke="#8b5cf6" strokeWidth={2} dot={false} />
-                          </LineChart>
-                        </ResponsiveContainer>
+                      <div className="h-[200px] bg-slate-50 dark:bg-slate-800/50 rounded-3xl">
+                        <div className="p-4 h-full w-full">
+                          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                            <LineChart data={filteredData}>
+                              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
+                              <XAxis dataKey="date" hide />
+                              <YAxis domain={[0, 100]} ticks={[30, 70]} hide />
+                              <Tooltip 
+                                contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '16px', color: '#fff' }}
+                              />
+                              <ReferenceLine y={70} stroke="#f43f5e" strokeDasharray="3 3" />
+                              <ReferenceLine y={30} stroke="#10b981" strokeDasharray="3 3" />
+                              <Line type="monotone" dataKey="rsi" stroke="#8b5cf6" strokeWidth={2} dot={false} />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
                       </div>
                     </div>
 
@@ -355,18 +357,20 @@ const StockDetail = () => {
                         <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest">MACD (12, 26, 9)</h4>
                         <span className="text-xs font-bold text-slate-500">Trend Momentum</span>
                       </div>
-                      <div className="h-[200px] bg-slate-50 dark:bg-slate-800/50 rounded-3xl p-4">
-                        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                          <ComposedChart data={filteredData}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
-                            <XAxis dataKey="date" hide />
-                            <YAxis hide />
-                            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '16px', color: '#fff' }} />
-                            <Bar dataKey="macd_hist" fill="#94a3b8" opacity="0.5" />
-                            <Line type="monotone" dataKey="macd" stroke="#3b82f6" strokeWidth={2} dot={false} />
-                            <Line type="monotone" dataKey="macd_signal" stroke="#f43f5e" strokeWidth={2} dot={false} />
-                          </ComposedChart>
-                        </ResponsiveContainer>
+                      <div className="h-[200px] bg-slate-50 dark:bg-slate-800/50 rounded-3xl">
+                        <div className="p-4 h-full w-full">
+                          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                            <ComposedChart data={filteredData}>
+                              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
+                              <XAxis dataKey="date" hide />
+                              <YAxis hide />
+                              <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '16px', color: '#fff' }} />
+                              <Bar dataKey="macd_hist" fill="#94a3b8" opacity="0.5" />
+                              <Line type="monotone" dataKey="macd" stroke="#3b82f6" strokeWidth={2} dot={false} />
+                              <Line type="monotone" dataKey="macd_signal" stroke="#f43f5e" strokeWidth={2} dot={false} />
+                            </ComposedChart>
+                          </ResponsiveContainer>
+                        </div>
                       </div>
                     </div>
                   </div>

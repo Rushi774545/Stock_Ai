@@ -12,5 +12,7 @@ weasyprint
 python-telegram-bot
 google-cloud-speech
 pydub
+gunicorn
+uvicorn
 statsmodels
-
+matplotlib

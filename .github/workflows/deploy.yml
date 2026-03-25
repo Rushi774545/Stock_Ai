@@ -1,0 +1,53 @@
+name: Deploy Stock AI App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to VM via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VM_IP }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/stockapp
+            git pull origin main
+            
+            # Setup .env for Backend
+            if [ ! -f LLMStock/.env ]; then
+              echo "DEBUG=False" >> LLMStock/.env
+              echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> LLMStock/.env
+              echo "ALLOWED_HOSTS=70.153.18.179,51.140.247.29,backend-stock-rushi.duckdns.org,frontend-stock-rushi.duckdns.org" >> LLMStock/.env
+            fi
+
+            # Setup .env for Frontend
+            if [ ! -f LLMStock/frontend/.env ]; then
+              echo "VITE_API_URL=https://backend-stock-rushi.duckdns.org/api" >> LLMStock/frontend/.env
+            fi
+            
+            # Backend deployment
+            cd LLMStock
+            python3 -m venv venv
+            source venv/bin/activate
+            pip install -r requirements.txt
+            python manage.py migrate
+            python manage.py collectstatic --no-input
+            
+            # Frontend deployment
+            cd frontend
+            npm install
+            npx vite build
+            
+            # Restart Services
+            cd /var/www/stockapp
+            pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
+            sudo systemctl restart nginx

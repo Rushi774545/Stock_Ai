@@ -1,2 +1,0 @@
-# If these files are ever tracked again, avoid corrupt merged SQLite blobs
-*.sqlite3 binary
