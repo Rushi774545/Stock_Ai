@@ -27,8 +27,23 @@ TOP_US_STOCKS = [
 def populate_stocks():
     for symbol in NIFTY_50:
         try:
+            print(f"Fetching data for {symbol}...")
             ticker = yf.Ticker(symbol)
             info = ticker.info
+            
+            # Fetch 1mo history to calculate volatility
+            hist = ticker.history(period="1mo")
+            volatility = 0
+            if not hist.empty:
+                volatility = hist['Close'].pct_change().std() * (252**0.5) * 100 # Annualized volatility
+
+            current_price = info.get('currentPrice') or info.get('regularMarketPrice')
+            prev_close = info.get('previousClose') or info.get('regularMarketPreviousClose')
+            
+            change_pct = 0
+            if current_price and prev_close:
+                change_pct = ((current_price - prev_close) / prev_close) * 100
+
             Stock.objects.update_or_create(
                 symbol=symbol,
                 defaults={
@@ -36,10 +51,19 @@ def populate_stocks():
                     'market': 'NIFTY',
                     'sector': info.get('sector', 'Unknown'),
                     'industry': info.get('industry', 'Unknown'),
-                    'current_price': info.get('currentPrice'),
+                    'current_price': current_price,
+                    'open_price': info.get('open') or info.get('regularMarketOpen'),
+                    'high_price': info.get('dayHigh') or info.get('regularMarketDayHigh'),
+                    'low_price': info.get('dayLow') or info.get('regularMarketDayLow'),
+                    'prev_close': prev_close,
                     'market_cap': info.get('marketCap'),
                     'pe_ratio': info.get('trailingPE'),
                     'dividend_yield': info.get('dividendYield'),
+                    'fifty_two_week_high': info.get('fiftyTwoWeekHigh'),
+                    'fifty_two_week_low': info.get('fiftyTwoWeekLow'),
+                    'volume': info.get('volume') or info.get('regularMarketVolume'),
+                    'volatility': volatility,
+                    'change_pct': change_pct,
                 }
             )
             print(f"Successfully populated {symbol}")
@@ -48,8 +72,23 @@ def populate_stocks():
 
     for symbol in TOP_US_STOCKS:
         try:
+            print(f"Fetching data for {symbol}...")
             ticker = yf.Ticker(symbol)
             info = ticker.info
+            
+            # Fetch 1mo history to calculate volatility
+            hist = ticker.history(period="1mo")
+            volatility = 0
+            if not hist.empty:
+                volatility = hist['Close'].pct_change().std() * (252**0.5) * 100
+
+            current_price = info.get('currentPrice') or info.get('regularMarketPrice')
+            prev_close = info.get('previousClose') or info.get('regularMarketPreviousClose')
+            
+            change_pct = 0
+            if current_price and prev_close:
+                change_pct = ((current_price - prev_close) / prev_close) * 100
+
             Stock.objects.update_or_create(
                 symbol=symbol,
                 defaults={
@@ -57,10 +96,19 @@ def populate_stocks():
                     'market': 'USA',
                     'sector': info.get('sector', 'Unknown'),
                     'industry': info.get('industry', 'Unknown'),
-                    'current_price': info.get('currentPrice'),
+                    'current_price': current_price,
+                    'open_price': info.get('open') or info.get('regularMarketOpen'),
+                    'high_price': info.get('dayHigh') or info.get('regularMarketDayHigh'),
+                    'low_price': info.get('dayLow') or info.get('regularMarketDayLow'),
+                    'prev_close': prev_close,
                     'market_cap': info.get('marketCap'),
                     'pe_ratio': info.get('trailingPE'),
                     'dividend_yield': info.get('dividendYield'),
+                    'fifty_two_week_high': info.get('fiftyTwoWeekHigh'),
+                    'fifty_two_week_low': info.get('fiftyTwoWeekLow'),
+                    'volume': info.get('volume') or info.get('regularMarketVolume'),
+                    'volatility': volatility,
+                    'change_pct': change_pct,
                 }
             )
             print(f"Successfully populated {symbol}")
