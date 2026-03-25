@@ -33,59 +33,30 @@ class StockListView(generics.ListAPIView):
             queryset = queryset.filter(market__iexact=market)
         return queryset
 
-class StockDetailView(views.APIView):
-    """
-    Detailed stock information including technical indicators, trends, and forecasts.
-    """
-    @method_decorator(cache_page(60 * 15)) # Cache for 15 minutes
-    def get(self, request, pk):
-        stock = get_object_or_404(Stock, pk=pk)
-        details = get_stock_details(stock.symbol)
-        if not details:
-            return Response({"error": "Failed to fetch detailed data."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-        # Merge basic stock info with detailed data
-        basic_info = StockSerializer(stock).data
-        basic_info.update(details)
-        return Response(basic_info)
-
 class StockForecastView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, pk):
         stock = get_object_or_404(Stock, pk=pk)
-        model_type = request.query_params.get('model', 'linear').lower()
-        timeframe = request.query_params.get('timeframe', 'daily').lower()
+        model_type = request.query_params.get('model', 'linear')
+        timeframe = request.query_params.get('timeframe', 'daily')
         horizon = int(request.query_params.get('horizon', 30))
         
-        # Fetch appropriate data based on timeframe
         ticker = yf.Ticker(stock.symbol)
-        period = "2y" if timeframe in ['daily', 'monthly', 'yearly'] else "1mo"
-        interval = "1d"
-        if timeframe == 'hourly':
-            interval = "1h"
+        hist = ticker.history(period="2y")
         
-        hist = ticker.history(period=period, interval=interval)
-        if hist.empty:
-            return Response({"error": "Insufficient data for forecasting"}, status=status.HTTP_400_BAD_REQUEST)
-            
-        forecast_data = get_advanced_forecast(hist, model_type=model_type, timeframe=timeframe, horizon=horizon)
-        
-        # Format historical data for chart
-        historical_chart = []
-        for index, row in hist.tail(100).iterrows():
-            historical_chart.append({
-                'date': index.strftime('%Y-%m-%d %H:%M'),
-                'price': float(row['Close'])
-            })
-            
-        return Response({
-            'symbol': stock.symbol,
-            'model': model_type,
-            'timeframe': timeframe,
-            'historical': historical_chart,
-            'forecast': forecast_data
-        })
+        forecast = get_advanced_forecast(hist, model_type, timeframe, horizon)
+        return Response(forecast)
+
+class StockDetailView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk):
+        stock = get_object_or_404(Stock, pk=pk)
+        details = get_stock_details(stock.symbol)
+        if not details:
+            return Response({"error": "Failed to fetch detailed data."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(details)
 
 from django.http import HttpResponse
 from django.template.loader import render_to_string

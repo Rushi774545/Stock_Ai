@@ -14,85 +14,51 @@ from google.cloud import speech
 from .tts_service import tts_service
 
 class ChatView(views.APIView):
-    permission_classes = [permissions.AllowAny]
-
-    def transcribe_audio(self, audio_file):
-        """Mock transcribing audio to text."""
-        # Real implementation would use Google Cloud Speech-to-Text
-        # For now, we mock the transcription to "What is the price of AAPL?"
-        return "What is the price of AAPL?"
+    permission_classes = [permissions.IsAuthenticated] # Require auth
 
     def post(self, request):
         message = request.data.get('message')
-        audio_file = request.FILES.get('audio')
-        
-        if audio_file:
-            message = self.transcribe_audio(audio_file)
-            
         if not message:
-            return Response({"error": "Message or audio required."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Index stocks if collection is empty
-        if rag_service.collection.count() == 0:
-            rag_service.index_stocks()
+            return Response({"error": "Message is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         user = request.user
         intent = gemini_service.classify_intent(message)
+
+        # Get chat history for the user
+        chat_history = ChatLog.objects.filter(user=user).order_by('timestamp')
+        gemini_history = []
+        for log in chat_history:
+            gemini_history.append({"role": "user", "parts": [log.message]})
+            gemini_history.append({"role": "model", "parts": [log.response]})
+
+        # Start a chat session with history
+        chat_session = gemini_service.start_chat(history=gemini_history)
+
+        # RAG query for context
+        context = rag_service.query_rag(message, user=user)
         
-        # Public mode restrictions
-        if not user.is_authenticated:
-            if intent == "add stock" or intent == "portfolio analysis":
-                response_text = "Please log in to manage your portfolio or analyze holdings."
-                audio = tts_service.text_to_speech(response_text)
-                return Response({
-                    "response": response_text,
-                    "intent": intent,
-                    "audio": audio
-                })
-            
-            # Allow only general market questions for public users
-            response_text = rag_service.query_rag(message, user=None)
-            audio = tts_service.text_to_speech(response_text)
-            self.log_chat(user, message, response_text, intent)
-            return Response({"response": response_text, "intent": intent, "audio": audio})
+        # Construct a more detailed prompt
+        full_prompt = (
+            f"You are MORPHEUS, a stock assistant. Here is some context:\n\n"
+            f"--- CONTEXT ---\n{context}\n--- END CONTEXT ---\n\n"
+            f"Based on this context and our past conversation, answer the following question: {message}"
+        )
 
-        # Intent: "add stock"
-        if intent == "add stock":
-            # Mock extracting symbol and quantity from message using Gemini
-            extract_prompt = f"Extract the stock symbol and quantity to add from this message: '{message}'. Return as 'SYMBOL,QUANTITY'."
-            extraction = gemini_service.get_gemini_response(extract_prompt)
-            try:
-                symbol, quantity = extraction.split(',')
-                stock = Stock.objects.get(symbol=symbol.strip().upper())
-                portfolio, created = Portfolio.objects.get_or_create(
-                    user=user, 
-                    stock=stock,
-                    defaults={'quantity': int(quantity.strip()), 'purchase_price': stock.current_price}
-                )
-                if not created:
-                    portfolio.quantity += int(quantity.strip())
-                    portfolio.save()
-                response_text = f"Successfully added {quantity.strip()} shares of {symbol.strip()} to your portfolio."
-            except Exception as e:
-                response_text = f"Failed to process 'add stock' request. Error: {str(e)}"
-            
-            audio = tts_service.text_to_speech(response_text)
-            self.log_chat(user, message, response_text, intent)
-            return Response({"response": response_text, "intent": intent, "audio": audio})
+        # Send message to Gemini and get response
+        response = chat_session.send_message(full_prompt)
+        response_text = response.text
 
-        # Intent: "portfolio analysis" or "stock info" or "general market"
-        # Index user data into ChromaDB for personalized RAG
-        if intent == "portfolio analysis":
-            rag_service.index_user_portfolio(user)
-            
-        response_text = rag_service.query_rag(message, user=user)
-        audio = tts_service.text_to_speech(response_text)
+        # Log the new chat message
         self.log_chat(user, message, response_text, intent)
+
+        # Get TTS audio
+        audio = tts_service.text_to_speech(response_text)
+
         return Response({"response": response_text, "intent": intent, "audio": audio})
 
     def log_chat(self, user, message, response, intent):
         ChatLog.objects.create(
-            user=user if user.is_authenticated else None,
+            user=user,
             message=message,
             response=response,
             intent=intent

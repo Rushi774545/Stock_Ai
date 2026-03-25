@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-default-key-for-dev
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',') if os.getenv('ALLOWED_HOSTS') else []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '70.153.18.179,51.140.247.29,localhost,127.0.0.1,backend-stock-rushi.duckdns.org,frontend-stock-rushi.duckdns.org').split(',')
 
 
 # Application definition
@@ -135,6 +135,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Caching
 CACHES = {
@@ -158,6 +159,14 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5174",
+    "http://70.153.18.179",
+    "https://frontend-stock-rushi.duckdns.org",
+    "http://frontend-stock-rushi.duckdns.org",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://frontend-stock-rushi.duckdns.org",
+    "https://backend-stock-rushi.duckdns.org",
 ]
 
 # Dev-friendly: any localhost port (narrow this in production if needed)

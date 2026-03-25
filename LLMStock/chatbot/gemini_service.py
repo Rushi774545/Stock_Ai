@@ -1,19 +1,37 @@
-import google.generativeai as genai
+import google.generativeai as google_genai
 import os
 from django.conf import settings
 
 class GeminiService:
     def __init__(self):
-        api_key = os.getenv('GEMINI_API_KEY')
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        self.api_key = os.getenv('GEMINI_API_KEY')
+        self._model = None
+
+    @property
+    def model(self):
+        if self._model is None:
+            if not self.api_key:
+                # Log error or return something that indicates it's not configured
+                return None
+            google_genai.configure(api_key=self.api_key)
+            self._model = google_genai.GenerativeModel('gemini-1.5-flash')
+        return self._model
+
+    def start_chat(self, history=[]):
+        if not self.model:
+            return None
+        return self.model.start_chat(history=history)
 
     def get_gemini_response(self, prompt, context=""):
+        if not self.model:
+            return "Gemini service not configured."
         full_prompt = f"Context: {context}\n\nQuestion: {prompt}"
         response = self.model.generate_content(full_prompt)
         return response.text
 
     def classify_intent(self, message):
+        if not self.model:
+            return "general market"
         prompt = f"""
         Classify the user intent for a stock platform.
         Options: "add stock", "general market", "portfolio analysis", "stock info".

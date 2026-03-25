@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from statsmodels.tsa.arima.model import ARIMA
 import warnings
 
-import google.generativeai as genai
+import google.generativeai as google_genai
 import os
 import json
 
@@ -26,31 +26,31 @@ def get_ai_analysis(symbol, news_articles):
             "sentiment_score": 0.5
         }
     
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    
-    news_text = "\n".join([f"- {n.get('title')} (Source: {n.get('publisher')})" for n in news_articles[:8]])
-    
-    prompt = f"""
-    Analyze the following recent news for stock {symbol} and provide a professional investment analysis:
-    1. A concise 2-sentence summary of the overall news impact.
-    2. A clear recommendation: BUY, SELL, or HOLD.
-    3. Detailed reasoning (Bullet points for: Why to Buy, Risks/Why not to Buy, and Why to Hold).
-    4. A sentiment score between 0.0 and 1.0 (0=Very Negative, 0.5=Neutral, 1=Very Positive).
-
-    News Headlines:
-    {news_text}
-
-    IMPORTANT: Return ONLY a valid JSON object with the following structure:
-    {{
-        "summary": "Concise summary here",
-        "recommendation": "BUY/SELL/HOLD",
-        "reasoning": "Detailed points here",
-        "sentiment_score": 0.75
-    }}
-    """
-    
     try:
+        google_genai.configure(api_key=api_key)
+        model = google_genai.GenerativeModel('gemini-1.5-flash')
+        
+        news_text = "\n".join([f"- {n.get('title')} (Source: {n.get('publisher')})" for n in news_articles[:8]])
+        
+        prompt = f"""
+        Analyze the following recent news for stock {symbol} and provide a professional investment analysis:
+        1. A concise 2-sentence summary of the overall news impact.
+        2. A clear recommendation: BUY, SELL, or HOLD.
+        3. Detailed reasoning (Bullet points for: Why to Buy, Risks/Why not to Buy, and Why to Hold).
+        4. A sentiment score between 0.0 and 1.0 (0=Very Negative, 0.5=Neutral, 1=Very Positive).
+
+        News Headlines:
+        {news_text}
+
+        IMPORTANT: Return ONLY a valid JSON object with the following structure:
+        {{
+            "summary": "Concise summary here",
+            "recommendation": "BUY/SELL/HOLD",
+            "reasoning": "Detailed points here",
+            "sentiment_score": 0.75
+        }}
+        """
+        
         response = model.generate_content(prompt)
         text = response.text.strip()
         if "```json" in text:
@@ -64,7 +64,7 @@ def get_ai_analysis(symbol, news_articles):
         return {
             "summary": "Could not generate AI summary at this time.",
             "recommendation": "HOLD",
-            "reasoning": "Technical error during AI analysis.",
+            "reasoning": f"Technical error during AI analysis: {e}",
             "sentiment_score": 0.5
         }
 

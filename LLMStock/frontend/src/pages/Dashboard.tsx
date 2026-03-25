@@ -77,31 +77,31 @@ const Dashboard = () => {
         <div className="lg:col-span-1 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
           <h3 className="text-lg font-semibold mb-6 text-slate-800 dark:text-white">Sector Allocation</h3>
           <div className="h-[300px]">
-            {sectorData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={sectorData}
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {sectorData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }}
-                    itemStyle={{ color: '#fff' }}
-                  />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="flex items-center justify-center h-full text-slate-400">No portfolio data yet</div>
-            )}
-          </div>
+  {sectorData.length > 0 ? (
+    <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+      <PieChart>
+        <Pie
+          data={sectorData}
+          innerRadius={60}
+          outerRadius={80}
+          paddingAngle={5}
+          dataKey="value"
+        >
+          {sectorData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip 
+          contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }}
+          itemStyle={{ color: '#fff' }}
+        />
+        <Legend />
+      </PieChart>
+    </ResponsiveContainer>
+  ) : (
+    <div className="flex items-center justify-center h-full text-slate-400">No portfolio data yet</div>
+  )}
+</div>
         </div>
 
         <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">

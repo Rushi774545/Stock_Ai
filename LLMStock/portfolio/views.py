@@ -8,6 +8,7 @@ from stocks.models import Stock
 import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 from .models import Portfolio, PortfolioGroup
 from .serializers import PortfolioSerializer, PortfolioGroupSerializer
 from stocks.models import Stock

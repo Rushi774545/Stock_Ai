@@ -252,7 +252,7 @@ const StockDetail = () => {
             </div>
 
             <div className="h-[450px]">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <ComposedChart data={filteredData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
                   <XAxis dataKey="date" hide />
@@ -333,7 +333,7 @@ const StockDetail = () => {
                         </span>
                       </div>
                       <div className="h-[200px] bg-slate-50 dark:bg-slate-800/50 rounded-3xl p-4">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                           <LineChart data={filteredData}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
                             <XAxis dataKey="date" hide />
@@ -356,7 +356,7 @@ const StockDetail = () => {
                         <span className="text-xs font-bold text-slate-500">Trend Momentum</span>
                       </div>
                       <div className="h-[200px] bg-slate-50 dark:bg-slate-800/50 rounded-3xl p-4">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                           <ComposedChart data={filteredData}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
                             <XAxis dataKey="date" hide />
@@ -425,7 +425,7 @@ const StockDetail = () => {
                           <RefreshCw size={48} className="text-primary-500 animate-spin" />
                         </div>
                       )}
-                      <ResponsiveContainer width="100%" height="100%">
+                      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                         <ComposedChart data={combinedForecastData}>
                           <defs>
                             <linearGradient id="colorHistorical" x1="0" y1="0" x2="0" y2="1">
@@ -449,7 +449,7 @@ const StockDetail = () => {
                           <Tooltip 
                             contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '16px', color: '#fff' }}
                             labelStyle={{ fontWeight: 'bold', marginBottom: '4px' }}
-                            formatter={(value: any, name: string) => [`${currency}${parseFloat(value).toFixed(2)}`, name]}
+                            formatter={(value: any, name: any) => [`${currency}${parseFloat(value).toFixed(2)}`, name]}
                           />
                           <Legend verticalAlign="top" height={36} />
                           <Area 
