@@ -12,3 +12,5 @@ weasyprint
 python-telegram-bot
 google-cloud-speech
 pydub
+statsmodels
+

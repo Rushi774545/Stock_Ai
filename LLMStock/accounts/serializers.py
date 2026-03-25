@@ -7,10 +7,22 @@ User = get_user_model()
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    telegram_id = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True, max_length=100
+    )
 
     class Meta:
         model = User
         fields = ('username', 'email', 'password', 'telegram_id')
+
+    def validate_telegram_id(self, value):
+        # UNIQUE(telegram_id) treats duplicate '' as conflicts; store NULL instead for "no Telegram"
+        if value is None or (isinstance(value, str) and not value.strip()):
+            return None
+        cleaned = value.strip()
+        if User.objects.filter(telegram_id=cleaned).exists():
+            raise serializers.ValidationError('This Telegram ID is already registered.')
+        return cleaned
 
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])

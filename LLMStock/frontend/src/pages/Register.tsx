@@ -52,6 +52,7 @@ const Register = () => {
               <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
               <input
                 {...register('username')}
+                autoComplete="username"
                 className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all dark:text-white"
                 placeholder="johndoe"
               />
@@ -66,6 +67,7 @@ const Register = () => {
               <input
                 {...register('email')}
                 type="email"
+                autoComplete="email"
                 className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all dark:text-white"
                 placeholder="john@example.com"
               />
@@ -80,6 +82,7 @@ const Register = () => {
               <input
                 {...register('password')}
                 type="password"
+                autoComplete="new-password"
                 className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all dark:text-white"
                 placeholder="••••••••"
               />
@@ -93,6 +96,7 @@ const Register = () => {
               <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
               <input
                 {...register('telegram_id')}
+                autoComplete="off"
                 className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all dark:text-white"
                 placeholder="123456789"
               />

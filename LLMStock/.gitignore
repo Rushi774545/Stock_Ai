@@ -1,0 +1,21 @@
+# Local secrets & env
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Django / local DB
+*.sqlite3
+db.sqlite3
+
+# Chroma / local vector store
+chroma_db/
+
+# Node
+node_modules/

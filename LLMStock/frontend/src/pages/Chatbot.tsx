@@ -109,7 +109,7 @@ const Chatbot = () => {
             <Bot size={24} />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">AI Stock Assistant</h2>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">MORPHEUS · AI Assistant</h2>
             <div className="flex items-center text-emerald-500 text-xs font-medium">
               <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span>
               Online & Ready

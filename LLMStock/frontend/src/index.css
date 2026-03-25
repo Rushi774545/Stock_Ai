@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Tailwind v4: class-based dark mode (config darkMode: 'class' is not applied by @tailwindcss/postcss alone) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary-50: #f0f9ff;
   --color-primary-100: #e0f2fe;

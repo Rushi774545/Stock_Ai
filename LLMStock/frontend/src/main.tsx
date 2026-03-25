@@ -6,6 +6,16 @@ import App from './App'
 import { AuthProvider } from './context/AuthContext'
 import './index.css'
 
+const THEME_KEY = 'morpheus-theme'
+
+function applyStoredTheme() {
+  const isDark = localStorage.getItem(THEME_KEY) !== 'light'
+  document.documentElement.classList.toggle('dark', isDark)
+  document.body.classList.toggle('dark', isDark)
+}
+
+applyStoredTheme()
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
